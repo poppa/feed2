@@ -1,0 +1,40 @@
+{
+  "name": "feed2",
+  "version": "1.0.0",
+  "description": "Feed generator",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "export NODE_ENV=development && tsc -w",
+    "build": "rimraf dist/ && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poppa/feed2.git"
+  },
+  "keywords": [
+    "feed",
+    "rss",
+    "atom",
+    "json"
+  ],
+  "author": "Pontus Östlund",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/poppa/feed2/issues"
+  },
+  "homepage": "https://github.com/poppa/feed2#readme",
+  "dependencies": {
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.5.0",
+    "@typescript-eslint/parser": "^2.5.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.18.2",
+    "rimraf": "^3.0.0",
+    "typescript": "^3.6.4"
+  }
+}
