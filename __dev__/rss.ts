@@ -53,46 +53,47 @@ const feed = new Feed({
     } as Extension<ExtensionValueJson>,
   ])
 
-// feed
-//   .addItem({
-//     id: { id: 'item1', isPermaLink: true },
-//     link: 'http://localhost/item1',
-//     title: 'Test item 1',
-//     date: new Date(Date.now()),
-//     description: 'Some description 1',
-//     comments: 'http://localhost/item1#comments',
-//     author: { name: 'John Doe', email: 'john.doe@site.dom' },
-//   })
-//   .addItem({
-//     id: { id: 'item2' },
-//     link: 'http://localhost/item2',
-//     title: 'Test item 2',
-//     date: new Date(Date.now() - 3600),
-//     description: 'Some description 2',
-//     comments: 'http://localhost/item2#comments',
-//     author: { name: 'Jane Doe', email: 'jane.doe@site.dom' },
-//   })
-//   .addItem({
-//     id: 'item3',
-//     link: 'http://localhost/item3',
-//     comments: 'http://localhost/item3#comments',
-//     author: { email: 'john.doe@site.dom' },
-//     title: 'Test item 3',
-//     date: new Date(Date.now() - 3600 * 2),
-//     content: '<p>Some encoded content</p>',
-//     media: [
-//       {
-//         url: 'http://localhost/myfile.mp4',
-//         size: 123456,
-//         contentType: 'video/mpeg4',
-//       },
-//       {
-//         url: 'http://localhost/myotherfile.mp4',
-//         size: 4533424,
-//         contentType: 'video/mpeg4',
-//       },
-//     ],
-//   })
+feed
+  .addItem({
+    id: { id: 'item1', isPermaLink: true },
+    link: 'http://localhost/item1',
+    title: 'Test item 1',
+    date: new Date(Date.now()),
+    description: 'Some description 1',
+    comments: 'http://localhost/item1#comments',
+    author: { name: 'John Doe', email: 'john.doe@site.dom' },
+    category: ['news', 'sports'],
+  })
+  .addItem({
+    id: { id: 'item2' },
+    link: 'http://localhost/item2',
+    title: 'Test item 2',
+    date: new Date(Date.now() - 3600),
+    description: 'Some description 2',
+    comments: 'http://localhost/item2#comments',
+    author: { name: 'Jane Doe', email: 'jane.doe@site.dom' },
+  })
+  .addItem({
+    id: 'item3',
+    link: 'http://localhost/item3',
+    comments: 'http://localhost/item3#comments',
+    author: { email: 'john.doe@site.dom' },
+    title: 'Test item 3',
+    date: new Date(Date.now() - 3600 * 2),
+    content: '<p>Some encoded content</p>',
+    media: [
+      {
+        url: 'http://localhost/myfile.mp4',
+        size: 123456,
+        contentType: 'video/mpeg4',
+      },
+      {
+        url: 'http://localhost/myotherfile.mp4',
+        size: 4533424,
+        contentType: 'video/mpeg4',
+      },
+    ],
+  })
 
 const res = feed.rss2()
 

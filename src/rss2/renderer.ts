@@ -250,6 +250,10 @@ export class Renderer extends BaseRenderer<Options> {
   }
 
   protected buildCategory(cat: Category): ElementCompact {
+    if (typeof cat === 'string') {
+      cat = { name: cat }
+    }
+
     const c: ElementCompact = { _text: cat.name }
 
     if (cat.domain) {
