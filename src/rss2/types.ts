@@ -6,49 +6,34 @@ import { ElementCompact } from 'xml-js'
 import { Image, Item } from '../lib/types'
 import { SetType, RequiredProps } from '../lib/ts-types'
 
-export type EC = ElementCompact
-
-export interface Rss extends EC {
-  rss: EC & { channel: Channel; _attributes: EC }
+export interface Rss extends ElementCompact {
+  rss: ElementCompact & { channel: Channel; _attributes: ElementCompact }
 }
 
-export interface Channel extends EC {
-  title: EC
-  link: EC
-  description: EC
-  lastBuildDate?: EC
-  pubDate?: EC
-  language?: EC
-  generator?: EC
-  docs?: EC
+export interface Channel extends ElementCompact {
+  title: ElementCompact
+  link: ElementCompact
+  description: ElementCompact
+  lastBuildDate?: ElementCompact
+  pubDate?: ElementCompact
+  language?: ElementCompact
+  generator?: ElementCompact
+  docs?: ElementCompact
   image?: RssImage
-  copyright?: EC
-  category?: EC[]
-  ttl?: EC
+  copyright?: ElementCompact
+  category?: ElementCompact[]
+  ttl?: ElementCompact
   item?: RssItem[]
 }
 
 export type RssImage = RequiredProps<
-  SetType<Image, EC>,
+  SetType<Image, ElementCompact>,
   'title' | 'link' | 'url'
 >
 
-export type RssItem = SetType<Item, EC> & {
-  pubDate?: EC
-  enclosure?: EC
-  guid?: EC
-  'content:encoded'?: EC
+export type RssItem = SetType<Item, ElementCompact> & {
+  pubDate?: ElementCompact
+  enclosure?: ElementCompact
+  guid?: ElementCompact
+  'content:encoded'?: ElementCompact
 }
-
-// export interface RssItem extends EC {
-//   title?: EC
-//   link?: EC
-//   description?: EC
-//   author?: EC
-//   category?: EC[]
-//   comments?: EC
-//   enclosure?: EC
-//   guid?: EC
-//   pubDate?: EC
-//   source?: EC
-// }
