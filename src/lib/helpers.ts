@@ -1,5 +1,13 @@
 import { ElementCompact } from 'xml-js'
-import { Namespace, ExtensionValue, Extension, ExtensionType } from './types'
+import {
+  Namespace,
+  ExtensionValue,
+  Extension,
+  ExtensionType,
+  Text,
+  TextComplete,
+  isTextObject,
+} from './types'
 
 export class MissingRequiredOptionError extends Error {
   constructor(option: string) {
@@ -9,13 +17,30 @@ export class MissingRequiredOptionError extends Error {
   }
 }
 
+export function toTextComplete(text: Text): TextComplete {
+  if (typeof text === 'string') {
+    return { text, cdata: false }
+  }
+
+  if (typeof text.cdata === 'undefined') {
+    text.cdata = true
+  }
+
+  return text as TextComplete
+}
+
 function addNode<O extends ElementCompact, K extends keyof O>(
   obj: O,
   key: K,
-  value: string | number | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any,
   prop: keyof ElementCompact
 ): void {
   if (typeof value !== 'undefined') {
+    if (isTextObject(value)) {
+      value = value.text
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     obj[key] = { [prop]: `${value}` } as any
   }
@@ -35,8 +60,17 @@ function addNode<O extends ElementCompact, K extends keyof O>(
 export function addSimple<O extends ElementCompact, K extends keyof O>(
   obj: O,
   key: K,
-  value: string | number | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any
 ): void {
+  if (isTextObject(value)) {
+    const t = toTextComplete(value)
+
+    if (t.cdata) {
+      return addNode(obj, key, t.text, '_cdata')
+    }
+  }
+
   addNode(obj, key, value, '_text')
 }
 
@@ -54,7 +88,8 @@ export function addSimple<O extends ElementCompact, K extends keyof O>(
 export function addCDATA<O extends ElementCompact, K extends keyof O>(
   obj: O,
   key: K,
-  value: string | number | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any
 ): void {
   addNode(obj, key, value, '_cdata')
 }

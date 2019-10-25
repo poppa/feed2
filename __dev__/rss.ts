@@ -6,7 +6,7 @@ const feed = new Feed({
   updated: new Date(),
   published: new Date(Date.now() - 3600 * 1000),
   link: 'https://kommunal-rapport.no/',
-  description: 'This is a simple test feed',
+  description: { text: 'This is a simple test feed' },
   generator: 'Test Feed 2',
   copyright: 'Test Site 2',
   language: 'en-gb',

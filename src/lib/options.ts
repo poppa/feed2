@@ -1,4 +1,4 @@
-import { Image, Person, FeedLinks } from './types'
+import { Image, Person, FeedLinks, Text } from './types'
 
 export interface Options {
   id?: string
@@ -7,13 +7,13 @@ export interface Options {
    * have an HTML website that contains the same information as your RSS file,
    * the title of your channel should be the same as the title of your website.
    */
-  title?: string
+  title?: Text
   /** Phrase or sentence describing the channel. */
-  description?: string
+  description?: Text
   /** The last time the content of the channel changed. */
   updated?: Date
   /** The URL to the HTML website corresponding to the channel. */
-  link?: string
+  link?: Text
   /**
    * The publication date for the content in the channel. For example, the New
    * York Times publishes on a daily basis, the publication date flips once
@@ -21,7 +21,7 @@ export interface Options {
    */
   published?: Date
   /** A string indicating the program used to generate the channel. */
-  generator?: string
+  generator?: Text
   /**
    * The language the channel is written in. This allows aggregators to group
    * all Italian language sites, for example, on a single page. A list of
@@ -31,14 +31,14 @@ export interface Options {
    * [values defined](https://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes)
    * by the W3C.
    */
-  language?: string
+  language?: Text
 
   image?: Image
 
-  docs?: string
+  docs?: Text
 
   /** Copyright notice for content in the channel. */
-  copyright?: string
+  copyright?: Text
   /** Email address for person responsible for editorial content. */
   managingEditor?: Person
   /**

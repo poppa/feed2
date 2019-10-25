@@ -4,13 +4,14 @@ import { Person } from './person'
 import { Source } from './source'
 import { GUID } from './guid'
 import { Media } from './media'
+import { Text } from './text'
 
 export interface Item {
   id?: GUID | string
-  title?: string
+  title?: Text
   link?: string
-  description?: string
-  content?: string
+  description?: Text
+  content?: Text
   author?: Person
   date?: Date
 

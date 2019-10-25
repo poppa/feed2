@@ -70,7 +70,7 @@ export class Renderer extends BaseRenderer<Options> {
     addSimple(i, 'link', img.link || feed.options.link)
     addSimple(i, 'width', img.width)
     addSimple(i, 'height', img.height)
-    addCDATA(i, 'description', img.description)
+    addSimple(i, 'description', img.description)
 
     return i as RssImage
   }
@@ -79,8 +79,8 @@ export class Renderer extends BaseRenderer<Options> {
     const items: RssItem[] = feed.items.map((item) => {
       const i: RssItem = {}
 
-      addCDATA(i, 'title', item.title)
-      addCDATA(i, 'description', item.description)
+      addSimple(i, 'title', item.title)
+      addSimple(i, 'description', item.description)
       addSimple(i, 'link', item.link)
       addSimple(i, 'comments', item.comments)
 
