@@ -3,11 +3,27 @@ import { BaseRenderer } from '../lib/renderer'
 import { Feed } from '../lib/feed'
 import { Options } from './options'
 import { generator } from '../lib/generator'
-import { addSimple, fqn } from '../lib/helpers'
-import { Category, Person, Source } from '../lib/types'
-import { Rss, EC, RssItem } from './types'
+import {
+  addSimple,
+  extensionToElementCompact,
+  filterExtensions,
+  addCDATA,
+} from '../lib/helpers'
+import {
+  Category,
+  Person,
+  Source,
+  Extension,
+  Image,
+  GUID,
+  Media,
+} from '../lib/types'
+import { Rss, RssItem, RssImage, Channel } from './types'
 
 export class Renderer extends BaseRenderer<Options> {
+  protected isContent = false
+  protected isAtom = false
+
   protected requiredOptions: Array<keyof Options> = [
     'link',
     'description',
@@ -21,6 +37,24 @@ export class Renderer extends BaseRenderer<Options> {
     const root = this.buildChannel(feed)
     root.rss.channel.item = this.buildItems(feed)
 
+    if (this.isContent) {
+      feed.addNamespace({
+        ns: 'xmlns',
+        name: 'content',
+        uri: 'http://purl.org/rss/1.0/modules/content/',
+      })
+    }
+
+    if (this.isAtom) {
+      feed.addNamespace({
+        ns: 'xmlns',
+        name: 'atom',
+        uri: 'http://www.w3.org/2005/Atom2',
+      })
+    }
+
+    this.appendNamespaces(feed, root)
+
     return js2xml(root, {
       compact: true,
       ignoreComment: true,
@@ -28,12 +62,27 @@ export class Renderer extends BaseRenderer<Options> {
     })
   }
 
+  protected buildImage(img: Image, feed: Feed): RssImage {
+    const i: Partial<RssImage> = {}
+
+    addSimple(i, 'url', img.url)
+    addSimple(i, 'title', img.title || feed.options.title)
+    addSimple(i, 'link', img.link || feed.options.link)
+    addSimple(i, 'width', img.width)
+    addSimple(i, 'height', img.height)
+    addCDATA(i, 'description', img.description)
+
+    return i as RssImage
+  }
+
   protected buildItems(feed: Feed): RssItem[] {
     const items: RssItem[] = feed.items.map((item) => {
       const i: RssItem = {}
-      addSimple(i, 'title', item.title)
+
+      addCDATA(i, 'title', item.title)
+      addCDATA(i, 'description', item.description)
       addSimple(i, 'link', item.link)
-      addSimple(i, 'description', item.description)
+      addSimple(i, 'comments', item.comments)
 
       if (item.author) {
         i.author = this.buildPerson(item.author)
@@ -51,78 +100,157 @@ export class Renderer extends BaseRenderer<Options> {
         i.category = item.category.map((c) => this.buildCategory(c))
       }
 
+      if (item.id) {
+        i.guid = this.buildGUID(item.id)
+      } else {
+        addSimple(i, 'guid', item.link)
+      }
+
+      if (item.date) {
+        addSimple(i, 'pubDate', item.date.toUTCString())
+      }
+
+      if (item.content) {
+        this.isContent = true
+        addCDATA(i, 'content:encoded', item.content)
+      }
+
+      if (item.media) {
+        i.enclosure = this.buildEnclosure(item.media)
+      }
+
       return i
     })
 
     return items
   }
 
+  protected buildEnclosure(media: Media | Media[]): ElementCompact {
+    const makeEnc = (md: Media): ElementCompact => {
+      const attr: ElementCompact = { url: md.url }
+      const m: ElementCompact = { _attributes: attr }
+
+      if (md.contentType) {
+        attr.type = md.contentType
+      }
+
+      if (md.size) {
+        attr.length = md.size
+      }
+
+      return m
+    }
+
+    if (Array.isArray(media)) {
+      return media.map(makeEnc)
+    }
+
+    return makeEnc(media)
+  }
+
+  protected buildGUID(id: GUID | string): ElementCompact {
+    const guid: ElementCompact = { _attributes: { isPermaLink: 'false' } }
+
+    if (typeof id === 'string') {
+      guid._text = id
+    } else {
+      guid._text = id.id
+
+      if (typeof id.isPermaLink !== 'undefined') {
+        // Doh!
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        guid._attributes!.isPermaLink = id.isPermaLink.toString()
+      }
+    }
+
+    return guid
+  }
+
   protected buildChannel(feed: Feed): Rss {
     const options = feed.options as Options
+
+    const channel: Partial<Channel> = {}
+
+    addSimple(channel, 'title', options.title)
+    addSimple(channel, 'link', options.link)
+    addSimple(channel, 'description', options.description)
+    addSimple(channel, 'generator', options.generator || generator)
+    addSimple(channel, 'language', options.language)
+    addSimple(channel, 'copyright', options.copyright)
+    addSimple(channel, 'ttl', options.ttl)
+    addSimple(
+      channel,
+      'docs',
+      options.docs || 'https://validator.w3.org/feed/docs/rss2.html'
+    )
+    addSimple(
+      channel,
+      'lastBuildDate',
+      (options.updated || new Date()).toUTCString()
+    )
+    addSimple(
+      channel,
+      'pubDate',
+      options.published && options.published.toUTCString()
+    )
+
+    if (options.feedLinks && options.feedLinks.atom) {
+      this.isAtom = true
+      addSimple(channel, 'atom:link', options.feedLinks.atom)
+    }
+
+    if (options.feedLinks && options.feedLinks.hub) {
+      this.isAtom = true
+
+      let atoms: ElementCompact[] = channel['atom:link'] || []
+
+      if (!Array.isArray(atoms)) {
+        atoms = [atoms]
+      }
+
+      atoms.push({
+        _attributes: { rel: 'self', href: options.feedLinks.hub },
+      })
+
+      channel['atom:link'] = atoms
+    }
+
+    if (options.image) {
+      channel.image = this.buildImage(options.image, feed)
+    }
+
+    if (feed.categories) {
+      channel.category = []
+
+      for (const c of feed.categories) {
+        channel.category.push(this.buildCategory(c))
+      }
+    }
+
+    this.buildExtensions(channel, feed.extensions)
 
     const root: Rss = {
       _declaration: { _attributes: { version: '1.0', encoding: 'utf-8' } },
       rss: {
         _attributes: { version: '2.0' },
-        channel: {
-          title: { _text: options.title },
-          link: { _text: options.link },
-          description: { _text: options.description },
-          generator: { _text: options.generator || generator },
-          lastBuildDate: {
-            _text: (options.updated || new Date()).toUTCString(),
-          },
-          docs: {
-            _text:
-              options.docs || 'https://validator.w3.org/feed/docs/rss2.html',
-          },
-        },
+        channel: channel as Channel,
       },
-    }
-
-    if (options.published) {
-      root.rss.channel.pubDate = { _text: options.published.toUTCString() }
-    }
-
-    if (feed.namespaces.length) {
-      for (const ns of feed.namespaces) {
-        root.rss._attributes[fqn(ns)] = ns.uri
-      }
-    }
-
-    if (options.language) {
-      root.rss.channel.language = { _text: options.language }
-    }
-
-    if (options.image) {
-      root.rss.channel.image = {
-        url: { _text: options.image.url },
-        title: { _text: options.image.title || options.title },
-        link: { _text: options.image.link || options.link },
-      }
-    }
-
-    if (options.copyright) {
-      root.rss.channel.copyright = { _text: options.copyright }
-    }
-
-    if (feed.categories) {
-      root.rss.channel.category = []
-
-      for (const c of feed.categories) {
-        root.rss.channel.category.push(this.buildCategory(c))
-      }
-    }
-
-    if (options.ttl) {
-      root.rss.channel.ttl = { _text: `${options.ttl}` }
     }
 
     return root
   }
 
+  protected buildExtensions(
+    node: ElementCompact,
+    extensions: Extension[]
+  ): void {
+    filterExtensions(extensions, 'rss2').forEach((ext) => {
+      node[ext.name] = extensionToElementCompact(ext.value)
+    })
+  }
+
   protected buildCategory(cat: Category): ElementCompact {
-    const c: EC = { _text: cat.name }
+    const c: ElementCompact = { _text: cat.name }
 
     if (cat.domain) {
       c._attributes = { domain: cat.domain }
@@ -132,7 +260,7 @@ export class Renderer extends BaseRenderer<Options> {
   }
 
   protected buildPerson(p: Person): ElementCompact {
-    const c: EC = {}
+    const c: ElementCompact = {}
 
     if (p.email) {
       let n = `${p.email}`
@@ -148,7 +276,7 @@ export class Renderer extends BaseRenderer<Options> {
   }
 
   protected buildSource(source: Source): ElementCompact {
-    const s: EC = {
+    const s: ElementCompact = {
       _text: source.name,
       _attributes: { url: source.url },
     }

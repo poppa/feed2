@@ -3,4 +3,6 @@ export interface Media {
   width?: number
   height?: number
   contentType?: string
+  duration?: number
+  size?: number
 }

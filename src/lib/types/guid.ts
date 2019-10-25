@@ -1,4 +1,4 @@
 export interface GUID {
-  url: string
+  id: string
   isPermaLink?: boolean
 }

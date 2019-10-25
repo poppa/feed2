@@ -1,4 +1,4 @@
-import { Image } from './types'
+import { Image, Person, FeedLinks } from './types'
 
 export interface Options {
   id?: string
@@ -7,11 +7,11 @@ export interface Options {
    * have an HTML website that contains the same information as your RSS file,
    * the title of your channel should be the same as the title of your website.
    */
-  title: string
+  title?: string
   /** Phrase or sentence describing the channel. */
   description?: string
   /** The last time the content of the channel changed. */
-  updated: Date
+  updated?: Date
   /** The URL to the HTML website corresponding to the channel. */
   link?: string
   /**
@@ -37,7 +37,21 @@ export interface Options {
 
   docs?: string
 
-  indentation?: number
+  /** Copyright notice for content in the channel. */
+  copyright?: string
+  /** Email address for person responsible for editorial content. */
+  managingEditor?: Person
+  /**
+   * Email address for person responsible for technical issues relating
+   * to channel.
+   */
+  webMaster?: Person
 
   ttl?: string | number
+
+  feedLinks?: FeedLinks
+
+  // feed2 config
+  indentation?: number
+  loose?: boolean
 }

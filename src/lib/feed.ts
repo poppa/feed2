@@ -14,28 +14,28 @@ export class Feed {
     this._options = options
   }
 
-  public get namespaces() {
+  public get namespaces(): Namespace[] {
     return this._namespaces
   }
 
-  public get categories() {
+  public get categories(): Category[] {
     return this._categories
   }
 
-  public get options() {
+  public get options(): Options {
     return this._options
   }
 
-  public extensions() {
+  public get extensions(): Extension[] {
     return this._extensions
   }
 
-  public addItem(item: Item) {
+  public addItem(item: Item): this {
     this.items.push(item)
     return this
   }
 
-  public addNamespace(namespace: Namespace | Namespace[]) {
+  public addNamespace(namespace: Namespace | Namespace[]): this {
     if (!Array.isArray(namespace)) {
       namespace = [namespace]
     }
@@ -45,7 +45,7 @@ export class Feed {
     return this
   }
 
-  public addCategory(category: Category | Category[]) {
+  public addCategory(category: Category | Category[]): this {
     if (!Array.isArray(category)) {
       category = [category]
     }
@@ -55,7 +55,17 @@ export class Feed {
     return this
   }
 
-  public rss2() {
-    return new this._rss2Renderer().render(this)
+  public addExtension(extension: Extension | Extension[]): this {
+    if (!Array.isArray(extension)) {
+      extension = [extension]
+    }
+
+    this._extensions = [...this._extensions, ...extension]
+
+    return this
+  }
+
+  public rss2<T extends Rss2Renderer>(renderer?: T): string {
+    return (renderer || new this._rss2Renderer()).render(this)
   }
 }

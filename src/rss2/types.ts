@@ -12,7 +12,7 @@ export interface Rss extends EC {
   rss: EC & { channel: Channel; _attributes: EC }
 }
 
-interface Channel extends EC {
+export interface Channel extends EC {
   title: EC
   link: EC
   description: EC
@@ -32,9 +32,12 @@ export type RssImage = RequiredProps<
   SetType<Image, EC>,
   'title' | 'link' | 'url'
 >
+
 export type RssItem = SetType<Item, EC> & {
   pubDate?: EC
   enclosure?: EC
+  guid?: EC
+  'content:encoded'?: EC
 }
 
 // export interface RssItem extends EC {

@@ -6,12 +6,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "export NODE_ENV=development && tsc -w",
-    "build": "rimraf dist/ && tsc"
+    "build": "rimraf dist/ && tsc",
+    "dev-dev": "tsc -p __dev__/tsconfig.json -w"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/poppa/feed2.git"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "feed",
     "rss",
@@ -28,13 +32,16 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.19",
     "@typescript-eslint/eslint-plugin": "^2.5.0",
     "@typescript-eslint/parser": "^2.5.0",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^24.9.0",
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",
+    "ts-jest": "^24.1.0",
     "typescript": "^3.6.4"
   }
 }
