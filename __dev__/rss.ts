@@ -81,6 +81,7 @@ feed
     title: 'Test item 3',
     date: new Date(Date.now() - 3600 * 2),
     content: '<p>Some encoded content</p>',
+    source: { name: 'Feed Test 1', url: 'http://localhost/feed' },
     media: [
       {
         url: 'http://localhost/myfile.mp4',
