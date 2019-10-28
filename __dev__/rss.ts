@@ -82,6 +82,22 @@ feed
     date: new Date(Date.now() - 3600 * 2),
     content: '<p>Some encoded content</p>',
     source: { name: 'Feed Test 1', url: 'http://localhost/feed' },
+    extension: {
+      type: ['rss2', 'atom1'],
+      name: 'media:content',
+      value: {
+        attributes: {
+          url:
+            'https://kommunal-rapport.no/sites/default/files/styles/' +
+            'mailchimp_full_width/public/lauareid.jpg?itok=pWSmZwEs',
+          fileSize: 1089745,
+          type: 'image/jpeg',
+          medium: 'image',
+          width: 170,
+          height: 142,
+        },
+      },
+    },
     media: [
       {
         url: 'http://localhost/myfile.mp4',

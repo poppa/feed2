@@ -119,6 +119,10 @@ export class Renderer extends BaseRenderer<Options> {
         i.enclosure = this.buildEnclosure(item.media)
       }
 
+      if (item.extension) {
+        this.buildExtensions(i, item.extension)
+      }
+
       return i
     })
 
@@ -196,7 +200,7 @@ export class Renderer extends BaseRenderer<Options> {
 
     if (options.feedLinks && options.feedLinks.atom) {
       this.isAtom = true
-      addSimple(channel, 'atom:link', options.feedLinks.atom)
+      addSimple(channel, 'atom:link', options.feedLinks.atom, { rel: 'self' })
     }
 
     if (options.feedLinks && options.feedLinks.hub) {
@@ -242,8 +246,12 @@ export class Renderer extends BaseRenderer<Options> {
 
   protected buildExtensions(
     node: ElementCompact,
-    extensions: Extension[]
+    extensions: Extension | Extension[]
   ): void {
+    if (!Array.isArray(extensions)) {
+      extensions = [extensions]
+    }
+
     filterExtensions(extensions, 'rss2').forEach((ext) => {
       node[ext.name] = extensionToElementCompact(ext.value)
     })

@@ -39,7 +39,8 @@ function addNode<O extends ElementCompact, K extends keyof O>(
   key: K,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any,
-  prop: keyof ElementCompact
+  prop: keyof ElementCompact,
+  attributes?: ElementCompact
 ): void {
   if (typeof value !== 'undefined') {
     if (isTextObject(value)) {
@@ -48,6 +49,15 @@ function addNode<O extends ElementCompact, K extends keyof O>(
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     obj[key] = { [prop]: `${value}` } as any
+  }
+
+  if (attributes) {
+    if (!obj[key]) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      obj[key] = {} as any
+    }
+
+    obj[key]._attributes = attributes
   }
 }
 
@@ -66,17 +76,18 @@ export function addSimple<O extends ElementCompact, K extends keyof O>(
   obj: O,
   key: K,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any
+  value: any,
+  attributes?: ElementCompact
 ): void {
   if (isTextObject(value)) {
     const t = toTextComplete(value)
 
     if (t.cdata) {
-      return addNode(obj, key, t.text, '_cdata')
+      return addNode(obj, key, t.text, '_cdata', attributes)
     }
   }
 
-  addNode(obj, key, value, '_text')
+  addNode(obj, key, value, '_text', attributes)
 }
 
 /**
