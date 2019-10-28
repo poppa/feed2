@@ -1,6 +1,6 @@
 {
   "name": "yafee",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Yet Another Feed Generator",
   "main": "dist/index.js",
   "scripts": {
