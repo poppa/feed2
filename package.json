@@ -1,7 +1,7 @@
 {
-  "name": "feed2",
+  "name": "yafee",
   "version": "1.0.0-alpha.1",
-  "description": "Feed generator",
+  "description": "Yet Another Feed Generator",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -22,7 +22,10 @@
     "atom",
     "json"
   ],
-  "author": "Pontus Östlund",
+  "author": {
+    "name": "Pontus Östlund",
+    "email": "poppanator@gmail.com"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/poppa/feed2/issues"

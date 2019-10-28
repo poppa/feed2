@@ -6,7 +6,7 @@ import {
   ExtensionType,
   Text,
   TextComplete,
-  isTextObject,
+  TextObject,
 } from './types'
 
 export class MissingRequiredOptionError extends Error {
@@ -15,6 +15,11 @@ export class MissingRequiredOptionError extends Error {
     this.name = this.constructor.name
     this.message = `Missing required option "${option}"`
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isTextObject(obj: any): obj is TextObject {
+  return typeof obj === 'object' && 'text' in obj
 }
 
 export function toTextComplete(text: Text): TextComplete {
