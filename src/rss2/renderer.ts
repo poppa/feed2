@@ -49,7 +49,7 @@ export class Renderer extends BaseRenderer<Options> {
       feed.addNamespace({
         ns: 'xmlns',
         name: 'atom',
-        uri: 'http://www.w3.org/2005/Atom2',
+        uri: 'http://www.w3.org/2005/Atom',
       })
     }
 
@@ -200,7 +200,10 @@ export class Renderer extends BaseRenderer<Options> {
 
     if (options.feedLinks && options.feedLinks.atom) {
       this.isAtom = true
-      addSimple(channel, 'atom:link', options.feedLinks.atom, { rel: 'self' })
+      addSimple(channel, 'atom:link', undefined, {
+        rel: 'self',
+        href: options.feedLinks.atom,
+      })
     }
 
     if (options.feedLinks && options.feedLinks.hub) {
