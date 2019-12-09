@@ -14,7 +14,8 @@
     "url": "git+https://github.com/poppa/feed2.git"
   },
   "files": [
-    "dist"
+    "dist",
+    "CHANGES.md"
   ],
   "keywords": [
     "feed",
