@@ -160,3 +160,29 @@ export function filterExtensions(
     }
   })
 }
+
+export function xmlEscape(input: string): string {
+  if (input.trim() !== '') {
+    input = input
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/&(?!(amp;)|(lt;)|(gt;)|(quot;)|(#39;)|(apos;))/g, '&amp;')
+      // replaces odd backslash(\\) with even.
+      .replace(/([^\\])((\\\\)*)\\(?![\\/{])/g, '$1\\\\$2')
+  }
+
+  return input
+}
+
+export function escapeAttributeCallback(
+  attributeValue: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): string {
+  if (typeof attributeValue === 'string') {
+    return xmlEscape(attributeValue)
+  }
+
+  return attributeValue
+}

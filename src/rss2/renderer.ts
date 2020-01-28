@@ -8,6 +8,7 @@ import {
   extensionToElementCompact,
   filterExtensions,
   addCDATA,
+  escapeAttributeCallback,
 } from '../lib/helpers'
 import {
   Category,
@@ -59,6 +60,7 @@ export class Renderer extends BaseRenderer<Options> {
       compact: true,
       ignoreComment: true,
       spaces: options.indentation || 2,
+      attributeValueFn: escapeAttributeCallback,
     })
   }
 

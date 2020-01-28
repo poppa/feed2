@@ -49,7 +49,7 @@ feed
   .addItem({
     id: 'item3',
     link: 'http://localhost/item3',
-    comments: 'http://localhost/item3#comments',
+    comments: 'http://localhost/item3?a=b&c=d#comments',
     description: 'This is the third item',
     author: { name: 'John Doe', email: 'john.doe@site.dom' },
     title: 'Test item 3',
@@ -63,7 +63,7 @@ feed
         attributes: {
           url:
             'https://kommunal-rapport.no/sites/default/files/styles/' +
-            'mailchimp_full_width/public/lauareid.jpg?itok=pWSmZwEs',
+            'mailchimp_full_width/public/lauareid.jpg?itok=pWSmZwEs&hej[]=hopp',
           fileSize: 1089745,
           type: 'image/jpeg',
           medium: 'image',
